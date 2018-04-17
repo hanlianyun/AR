@@ -7,8 +7,10 @@
 	<link rel="stylesheet" href="">
 </head>
 <body>
-	<input id="fileBtn" type="file" onchange="upload('#fileBtn', '#img');" accept="image/*" capture="camera"/>
+    <label>android</label><input id="fileBtn" type="file" onchange="upload('#fileBtn', '#img');" accept="image/*" capture="camera"/>
+    <label>ios</label><input id="fileBtn" type="file" multiple onchange="upload('#fileBtn', '#img');" accept="image/*"/>
 	<img src="" id="img"/>
+    <label>摄像机</label><input id="fileBtn" type="file" onchange="upload('#fileBtn', '#img');" accept="image/*" capture="camcorder"/>
 
 <!-- # 解析
 # accept 属性（允许上传两种文件类型：gif 和 jpeg）
