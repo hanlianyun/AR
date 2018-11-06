@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
+	<!-- 引入three.js库 及帧数查看组件 -->
+	<script src='vendor/three.js/build/three.js'></script>
+	<script src='vendor/three.js/examples/js/libs/stats.min.js'></script>
+	<!-- 引入jsartoolkit -->
+	<script src='../vendor/jsartoolkit5/build/artoolkit.min.js'></script>
+	<script src='../vendor/jsartoolkit5/js/artoolkit.api.js'></script>
+	<!-- 引入threex.artoolkit -->
+	<script src='../src/threex/threex-artoolkitsource.js'></script>
+	<script src='../src/threex/threex-artoolkitcontext.js'></script>
+	<script src='../src/threex/threex-artoolkitprofile.js'></script>
+	<script src='../src/threex/threex-arbasecontrols.js'></script>
+	<script src='../src/threex/threex-armarkercontrols.js'></script>
+	<script src='../src/threex/threex-arsmoothedcontrols.js'></script>
+	<!-- 引入JQ -->
+	<script src='vendor/js/jquery.min.1.7.js'></script>
+	<!-- 引入OBJ -->
+	<script src='vendor/js/MTLLoader.js'></script>
+	<script src='vendor/js/OBJLoader.js'></script>
+	<!-- 引入DIV -->
+	<script src="vendor/js/CSS2DRenderer.js"></script>
+	<script src="vendor/js/CSS3DRenderer.js"></script>
+	<!-- 操控模型 -->
+	<script src='vendor/js/OrbitControls.js'></script>
+	<script>THREEx.ArToolkitContext.baseURL = '../'</script>
+	<!-- 样式 -->
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden;
+		}
+		
+		#css,
+		#webgl {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			/* z-index: -1;  */
+		}
+		
+		#css {
+		}
+		
+		#webgl {
+			pointer-events: none;
+		}
+		
+		.div {
+		}
+	</style>
+</head>
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+	<div style='position: absolute; top: 10px; width:100%; text-align: center;z-index:1';>
+	</div>
+<script>
+	// 模型变量
+	var camera, scene, renderer, renderer2, windowHalfX, windowHalfY, elementObj;
+	var mouseX = 0, mouseY = 0, tempX = 0, tempY = 0;
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+	var controls, percentComplete;
+	var sphere, group, cubeobj, radiu;
+	var light, move = true;
+	var lookAt = new THREE.Vector3(0, 0, 0);
+	var lightMovementAmplitude = 200;
+	var mouse = new THREE.Vector2();
+	var tempmouse = new THREE.Vector2();
+	var raycaster = new THREE.Raycaster();
+	var cameraposition, cube = [], onetime = 0;
+
+	//init renderer（初始化渲染器）
+	var renderer = new THREE.WebGLRenderer({
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+	// renderer.setPixelRatio( 2 );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.domElement.style.position = 'absolute'
+	renderer.domElement.style.top = '0px'
+	renderer.domElement.style.left = '0px'
+	document.body.appendChild( renderer.domElement );
+
+	//array of  functions for the rendering loop（渲染处理函数组初始化）
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene	= new THREE.Scene();//初始化场景和环境
+
+	var ambient = new THREE.AmbientLight( 0x666666 );
+	scene.add( ambient );
+
+	var directionalLight = new THREE.DirectionalLight( 0x887766 );
+	directionalLight.position.set( -1, 1, 1 ).normalize();
+	scene.add( directionalLight );
+
+    //Initialize a basic camera
+    //Create a camera（初始化相机添加到场景）
+	var camera = new THREE.Camera();
+	scene.add(camera);
+
+	// 控制器
+	controls = new THREE.OrbitControls(camera, renderer.domElement);
+	controls.enablePan = true;
+	controls.enableDamping = true;
+	controls.enableZoom = true;
+
+	function updateControls() {
+		controls.update();
+	}
+	//handle arToolkitSource（调用打开相机事件，由THREEx提供）
+	var arToolkitSource = new THREEx.ArToolkitSource({
+		// to read from the webcam 
+		sourceType : 'webcam',
+
+		// // to read from an image
+		// sourceType : 'image',
+		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
+		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/armchair.jpg',
+
+		// to read from a video
+		// sourceType : 'video',
+		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
+	})
+
+	arToolkitSource.init(function onReady(){
+		onResize()
+	})
+	
+	//handle resize(处理重新调整大小后正常显示)
+	window.addEventListener('resize', function(){
+		onResize()
+	})
+	function onResize(){
+		arToolkitSource.onResizeElement()	
+		arToolkitSource.copyElementSizeTo(renderer.domElement)	
+		if( arToolkitContext.arController !== null ){
+			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)	
+		}	
+	}
+
+	//初始化 ArcToolkit环境, 相机内部场景
+    //initialize arToolkitContext	
+
+	// create atToolkitContext
+	var arToolkitContext = new THREEx.ArToolkitContext({
+		//相机参数设置
+		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+		// debug: true,
+		// detectionMode: 'mono_and_matrix',
+		detectionMode: 'mono',
+		// detectionMode: 'color_and_matrix',
+		// matrixCodeType: '3x3',
+
+		canvasWidth: 80*3,
+		canvasHeight: 60*3,
+
+		maxDetectionRate: 30,//最大旋转角度还是什么滴
+	})
+	// initialize it
+	arToolkitContext.init(function onCompleted(){
+		// copy projection matrix to camera
+		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+	})
+
+	// update artoolkit on every frame
+	onRenderFcts.push(function(){
+		if( arToolkitSource.ready === false )	return
+
+		arToolkitContext.update( arToolkitSource.domElement )
+	})
+	
+	//Create a ArMakerControls
+    //创建一个Ar标记
+	var markerRoot = new THREE.Group;//用threejs的点集合初始化。
+	scene.add(markerRoot);
+	var markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+		// type: 'barcode',
+		// barcodeValue: 5,
+		type : 'pattern',
+		patternUrl : THREEx.ArToolkitContext.baseURL + 'examples/marker-training/examples/pattern-files/pattern-more.patt',
+	})
+
+
+	// build a smoothedControls
+	// 建立一个平滑控制
+	var smoothedRoot = new THREE.Group()
+	scene.add(smoothedRoot)
+	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
+		lerpPosition: 0.4,
+		lerpQuaternion: 0.3,
+		lerpScale: 1,
+		// minVisibleDelay: 1,
+		// minUnvisibleDelay: 1,
+	})
+	onRenderFcts.push(function(delta){
+		smoothedControls.update(markerRoot)
+	})	
+	
+	//add Object in the scene
+    //添加物体
+	var arWorldRoot = smoothedRoot
+
+	// var mesh = new THREE.AxisHelper()
+	// markerRoot.add(mesh)
+	// arWorldRoot.add(mesh)
+
+	// add a torus knot
+    //创建物体的重要步骤
+    // 添加模型1
+	// var geometry = new THREE.CubeGeometry(1,1,1);
+	// var material = new THREE.MeshNormalMaterial({
+	// 	transparent : true,
+	// 	opacity: 0.5,
+	// 	side: THREE.DoubleSide
+	// })
+	// var mesh = new THREE.Mesh( geometry, material );
+	// mesh.position.y	= geometry.parameters.height/2
+	// arWorldRoot.add(mesh)
+	// // 添加模型2
+	// var geometry = new THREE.TorusKnotGeometry(0.3,0.1,64,16);
+	// var material = new THREE.MeshNormalMaterial(); 
+	// var mesh = new THREE.Mesh( geometry, material );
+	// mesh.position.y	= 0.5
+	// arWorldRoot.add( mesh );
+
+	
+	// 运行
+	// init ();
+
+	// 添加外部模型
+	function init () {
+		~ function () {
+			//model模型加载
+			for(let temp = 0; temp < 5; temp++) {
+				var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+				var material = new THREE.MeshPhongMaterial({
+					vertexColors: THREE.FaceColors,
+					overdraw: 0.5,
+					shininess: 50,
+					color: Math.random() * 0xffffff,
+				});
+				cube[onetime] = new THREE.Mesh(geometry, material);
+				cube[onetime].position.z = 0 + onetime * 0.4;
+				cube[onetime].position.y = 0;
+				cube[onetime].position.x = 0;
+				// cube[onetime].castShadow = true;
+				cube[onetime].name = onetime;
+				scene.add(cube[onetime]);
+				onetime++;
+				console.log('aaaaaaaaaa')
+			}
+		}()
+	}
+
+	// 添加外部模型 END
+	// onRenderFcts.push(function(delta){
+	// 	//又加了一个旋转事件
+	// 	arWorldRoot.rotation.x += delta * Math.PI
+	// })
+
+	//renderer the Whole thing on the page
+    //渲染场景到页面中
+    //渲染率查看器
+	var stats = new Stats();
+	document.body.appendChild( stats.dom );
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+		stats.update();
+	})
+
+
+
+	//行程渲染事件环路
+    //run the rendering loop
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// renderer.render(scene, camera);
+		// updateControls();
+		// measure time
+		lastTimeMsec = lastTimeMsec || nowMsec-1000/60
+		var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec = nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+</script>
+</body>
+</html>
