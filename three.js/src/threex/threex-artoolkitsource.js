@@ -178,24 +178,34 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
 		return null
 	}
 
+	var exArray = ''; //存储设备源ID 
 	// get available devices
 	navigator.mediaDevices.enumerateDevices().then(function(devices) {
-                var userMediaConstraints = {
+		for (let i in devices) {
+	        if (devices[i].kind == 'videoinput') {
+	            exArray = devices[i].deviceId;
+	        }
+    	}
+
+        var userMediaConstraints = {
 			audio: false,
 			video: {
-				facingMode: 'environment',
-				width: {
-					ideal: _this.parameters.sourceWidth,
-					// min: 1024,
-					// max: 1920
-				},
-				height: {
-					ideal: _this.parameters.sourceHeight,
-					// min: 776,
-					// max: 1080
-				}
+				optional: [
+                	{ 'sourceId': exArray }
+                ]
+				// facingMode: 'environment',
+				// width: {
+				// 	ideal: _this.parameters.sourceWidth,
+				// 	// min: 1024,
+				// 	// max: 1920
+				// },
+				// height: {
+				// 	ideal: _this.parameters.sourceHeight,
+				// 	// min: 776,
+				// 	// max: 1080
+				// }
 		  	}
-                }
+        }
 		// get a device which satisfy the constraints
 		navigator.mediaDevices.getUserMedia(userMediaConstraints).then(function success(stream) {
 			// set the .src of the domElement
