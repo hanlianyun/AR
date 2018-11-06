@@ -105,13 +105,10 @@
 
 	// 控制器
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.enablePan = true;
-	controls.enableDamping = true;
+	controls.enablePan = false;
+	controls.enableDamping = false;
 	controls.enableZoom = true;
 
-	function updateControls() {
-		controls.update();
-	}
 	//handle arToolkitSource（调用打开相机事件，由THREEx提供）
 	var arToolkitSource = new THREEx.ArToolkitSource({
 		// to read from the webcam 
@@ -181,6 +178,7 @@
 	var markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
 		// type: 'barcode',
 		// barcodeValue: 5,
+		
 		type : 'pattern',
 		patternUrl : THREEx.ArToolkitContext.baseURL + 'examples/marker-training/examples/pattern-files/pattern-more.patt',
 	})
@@ -230,38 +228,34 @@
 
 	
 	// 运行
-	// init ();
+	// init();
+	// animate();
 
 	// 添加外部模型
-	function init () {
-		~ function () {
-			//model模型加载
-			for(let temp = 0; temp < 5; temp++) {
-				var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
-				var material = new THREE.MeshPhongMaterial({
-					vertexColors: THREE.FaceColors,
-					overdraw: 0.5,
-					shininess: 50,
-					color: Math.random() * 0xffffff,
-				});
-				cube[onetime] = new THREE.Mesh(geometry, material);
-				cube[onetime].position.z = 0 + onetime * 0.4;
-				cube[onetime].position.y = 0;
-				cube[onetime].position.x = 0;
-				// cube[onetime].castShadow = true;
-				cube[onetime].name = onetime;
-				scene.add(cube[onetime]);
-				onetime++;
-				console.log('aaaaaaaaaa')
-			}
-		}()
-	}
+	~ function () {
+		//model模型加载
+		for(let temp = 0; temp < 5; temp++) {
+			var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+			var material = new THREE.MeshPhongMaterial({
+				vertexColors: THREE.FaceColors,
+				overdraw: 0.5,
+				shininess: 50,
+				color: Math.random() * 0xffffff,
+			});
+			cube[onetime] = new THREE.Mesh(geometry, material);
+			cube[onetime].position.z = 0 + onetime * 0.4;
+			// cube[onetime].castShadow = true;
+			cube[onetime].name = onetime;
+			arWorldRoot.add(cube[onetime]);
+			onetime++;
+		}
+	}()
 
 	// 添加外部模型 END
-	// onRenderFcts.push(function(delta){
-	// 	//又加了一个旋转事件
-	// 	arWorldRoot.rotation.x += delta * Math.PI
-	// })
+	onRenderFcts.push(function(delta){
+		//又加了一个旋转事件
+		arWorldRoot.rotation.x += delta * Math.PI
+	})
 
 	//renderer the Whole thing on the page
     //渲染场景到页面中
@@ -274,16 +268,16 @@
 		stats.update();
 	})
 
+	// animate();
+	
 
-
+	
 	//行程渲染事件环路
     //run the rendering loop
 	var lastTimeMsec= null
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
-		// renderer.render(scene, camera);
-		// updateControls();
 		// measure time
 		lastTimeMsec = lastTimeMsec || nowMsec-1000/60
 		var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
@@ -293,6 +287,7 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
+
 </script>
 </body>
 </html>
