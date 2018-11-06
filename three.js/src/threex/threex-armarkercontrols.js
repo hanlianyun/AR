@@ -229,7 +229,7 @@ ARjs.MarkerControls.prototype._initArtoolkit = function(){
 		// _this.updateWithModelViewMatrix(modelViewMatrix)
 		if (suc) {
 			suc = false;
-			init ()
+			myinit ()
 		}
 	}
 }
