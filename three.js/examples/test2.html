@@ -100,7 +100,8 @@
 
     //Initialize a basic camera
     //Create a camera（初始化相机添加到场景）
-	var camera = new THREE.Camera();
+	//var camera = new THREE.Camera();
+	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
 	scene.add(camera);
 
 	// 控制器
