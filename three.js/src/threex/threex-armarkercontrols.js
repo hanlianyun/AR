@@ -1,5 +1,6 @@
 var ARjs = ARjs || {}
 var THREEx = THREEx || {}
+var suc = true
 
 ARjs.MarkerControls = THREEx.ArMarkerControls = function(context, object3d, parameters){
 	var _this = this
@@ -224,8 +225,12 @@ ARjs.MarkerControls.prototype._initArtoolkit = function(){
 		if( event.data.type === artoolkit.PATTERN_MARKER && event.data.marker.cfPatt < _this.parameters.minConfidence )	return
 		if( event.data.type === artoolkit.BARCODE_MARKER && event.data.marker.cfMatt < _this.parameters.minConfidence )	return
 
-		var modelViewMatrix = new THREE.Matrix4().fromArray(event.data.matrix)
-		_this.updateWithModelViewMatrix(modelViewMatrix)
+		// var modelViewMatrix = new THREE.Matrix4().fromArray(event.data.matrix)
+		// _this.updateWithModelViewMatrix(modelViewMatrix)
+		if (suc) {
+			suc = false;
+			init ()
+		}
 	}
 }
 

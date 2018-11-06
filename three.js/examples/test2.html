@@ -232,24 +232,28 @@
 	// animate();
 
 	// 添加外部模型
-	~ function () {
-		//model模型加载
-		for(let temp = 0; temp < 5; temp++) {
-			var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
-			var material = new THREE.MeshPhongMaterial({
-				vertexColors: THREE.FaceColors,
-				overdraw: 0.5,
-				shininess: 50,
-				color: Math.random() * 0xffffff,
-			});
-			cube[onetime] = new THREE.Mesh(geometry, material);
-			cube[onetime].position.z = 0 + onetime * 0.4;
-			// cube[onetime].castShadow = true;
-			cube[onetime].name = onetime;
-			arWorldRoot.add(cube[onetime]);
-			onetime++;
-		}
-	}()
+	function init () {
+		~ function () {
+			//model模型加载
+			for(let temp = 0; temp < 5; temp++) {
+				var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+				var material = new THREE.MeshPhongMaterial({
+					vertexColors: THREE.FaceColors,
+					overdraw: 0.5,
+					shininess: 50,
+					color: Math.random() * 0xffffff,
+				});
+				cube[onetime] = new THREE.Mesh(geometry, material);
+				cube[onetime].position.z = 0 + onetime * 0.4;
+				cube[onetime].position.y = -10;
+				cube[onetime].position.x = -10;
+				// cube[onetime].castShadow = true;
+				cube[onetime].name = onetime;
+				scene.add(cube[onetime]);
+				onetime++;
+			}
+		}()
+	}
 
 	// 添加外部模型 END
 	onRenderFcts.push(function(delta){
