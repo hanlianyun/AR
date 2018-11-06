@@ -242,9 +242,9 @@
 				color: Math.random() * 0xffffff,
 			});
 			cube[onetime] = new THREE.Mesh(geometry, material);
-			cube[onetime].position.z = 0 + onetime * 0.4;
-			cube[onetime].position.y = -10;
-			cube[onetime].position.x = -10;
+			cube[onetime].position.y = 0 + onetime * 0.4;
+			cube[onetime].position.z = -10;
+			cube[onetime].position.x = 0;
 			// cube[onetime].castShadow = true;
 			cube[onetime].name = onetime;
 			scene.add(cube[onetime]);
