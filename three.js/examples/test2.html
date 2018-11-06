@@ -265,7 +265,7 @@
 	document.body.appendChild( stats.dom );
 	// render the scene
 	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
+		// renderer.render( scene, camera );
 		stats.update();
 	})
 
@@ -279,6 +279,8 @@
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
+		updateControls();
+		renderer.render(scene, camera);
 		// measure time
 		lastTimeMsec = lastTimeMsec || nowMsec-1000/60
 		var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
@@ -288,7 +290,9 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
-
+	function updateControls() {
+		controls.update();
+	}
 </script>
 </body>
 </html>
