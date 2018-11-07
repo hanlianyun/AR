@@ -52,6 +52,10 @@
 		.box {
 			width: 100vw;
 			height: 100vh;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 9999999;
 		}
 		.test {
 			position: absolute;
@@ -66,7 +70,7 @@
 	</style>
 </head>
 <body class="box" id="box">
-	<div class="test">006</div>
+	<div class="test">007</div>
 </body>
 <script>
 	// 模型变量
@@ -185,8 +189,6 @@
 		lerpPosition: 0.4,
 		lerpQuaternion: 0.3,
 		lerpScale: 1,
-		// minVisibleDelay: 1,
-		// minUnvisibleDelay: 1,
 	})
 	onRenderFcts.push(function(delta){
 		smoothedControls.update(markerRoot)
@@ -218,7 +220,6 @@
 			cube[onetime].position.y = 0 + onetime * 0.4;
 			cube[onetime].position.z = -10;
 			cube[onetime].position.x = 0;
-			// cube[onetime].castShadow = true;
 			cube[onetime].name = onetime;
 			allcube.add(cube[onetime]);
 			onetime++;
