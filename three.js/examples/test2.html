@@ -256,9 +256,8 @@
 	// 添加外部模型 END
 	onRenderFcts.push(function(delta){
 		//又加了一个旋转事件
-		// scene.rotation.x += delta * Math.PI
+		scene.rotation.y += delta * Math.PI
 		console.log(scene.rotation.y)
-		console.log('1')
 	})
 
 	//renderer the Whole thing on the page
