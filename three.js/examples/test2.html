@@ -239,20 +239,23 @@
 		}
 		//监听器
 		document.addEventListener( 'touchstart', function (event) {
-			move = true;
-			mouseX = event.clientX;//出发事件时的鼠标指针的水平坐标
-			rotateStart.set( event.clientX, event.clientY );
-			document.addEventListener('touchmove', onTouchMove, false );
+			console.log('a')
+			// move = true;
+			// mouseX = event.clientX;//出发事件时的鼠标指针的水平坐标
+			// rotateStart.set( event.clientX, event.clientY );
+			// document.addEventListener('touchmove', onTouchMove, false );
 		}, false);
 
 		document.addEventListener('touchend', function(event) {
-			move = false;
-			document.removeEventListener("touchmove", onTouchMove);
+			console.log('b')
+			// move = false;
+			// document.removeEventListener("touchmove", onTouchMove);
 		}, false);
 
 		document.addEventListener('touchmove', function(event) {
-			move = true;
-			onTouchMove (event);
+			console.log('c')
+			// move = true;
+			// onTouchMove (event);
 		}, false);
 
 		windowHalfX = window.innerWidth / 2;
