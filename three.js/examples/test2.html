@@ -235,7 +235,7 @@
 	// 添加外部模型
 	function myinit () {
 		for(let temp = 0; temp < 5; temp++) {
-			var geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+			var geometry = new THREE.BoxGeometry(0.4, 0.4, 0.4);
 			var material = new THREE.MeshPhongMaterial({
 				vertexColors: THREE.FaceColors,
 				overdraw: 0.5,
@@ -243,8 +243,8 @@
 				color: Math.random() * 0xffffff,
 			});
 			cube[onetime] = new THREE.Mesh(geometry, material);
-			cube[onetime].position.y = 0 + onetime * 0.6;
-			cube[onetime].position.z = 0;
+			cube[onetime].position.y = 0 + onetime * 0.4;
+			cube[onetime].position.z = -10;
 			cube[onetime].position.x = 0;
 			// cube[onetime].castShadow = true;
 			cube[onetime].name = onetime;
@@ -256,7 +256,7 @@
 	// 添加外部模型 END
 	onRenderFcts.push(function(delta){
 		//又加了一个旋转事件
-		// scene.rotation.x += delta * Math.PI
+		arWorldRoot.rotation.x += delta * Math.PI
 	})
 
 	//renderer the Whole thing on the page
@@ -269,6 +269,8 @@
 		// renderer.render( scene, camera );
 		stats.update();
 	})
+
+	// animate();
 	
 
 	
