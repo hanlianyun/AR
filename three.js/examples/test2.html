@@ -213,9 +213,11 @@
 	// add a torus knot
     //创建物体的重要步骤
 
-	var allcube = new THREE.Group()
-	scene.add(allcube)
-	var mouseDown
+	var allcube = new THREE.Group();
+	scene.add(allcube);
+	var mouseDown;
+	var rotateStart;
+    rotateStart = new THREE.Vector2();
 	function myinit () {
 		// 添加外部模型
 		for(let temp = 0; temp < 5; temp++) {
