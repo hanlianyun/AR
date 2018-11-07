@@ -244,6 +244,11 @@
 		scene.add(allcube);
 	}
 
+	function myanimate () {
+		renderer2.render(scene, camera);
+		updateControls();
+		requestAnimationFrame(myanimate);
+	}
 	// 添加外部模型 END
 	// onRenderFcts.push(function(delta){
 	// 	//又加了一个旋转事件
@@ -273,8 +278,8 @@
 		// keep looping
 		requestAnimationFrame( animate );
 		// renderer.render(scene, camera);
-		renderer2.render(scene, camera);
-		updateControls();
+		// renderer2.render(scene, camera);
+		// updateControls();
 		// measure time
 		lastTimeMsec = lastTimeMsec || nowMsec-1000/60
 		var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
