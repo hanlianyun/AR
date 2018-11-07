@@ -49,15 +49,22 @@
 		#webgl {
 			pointer-events: none;
 		}
-		
+		.box {
+			width: 100vw;
+			height: 100vh;
+		}
+		.test {
+			position: absolute;
+			top: 0;
+			left: 0;
+			font-size: 36px;
+		}
 		.div {
 		}
 	</style>
 </head>
-<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
-	<div style='position: absolute; top: 10px; width:100%; text-align: center;z-index:1';>
-	</div>
-	<div class="test" style='position: absolute; top: 0; left: 0; font-size: 36px'>003</div>
+<body class="box" id="box">
+	<div class="test">004</div>
 </body>
 <script>
 	// 模型变量
@@ -87,6 +94,7 @@
 	renderer.domElement.style.left = '0px'
 	document.body.appendChild( renderer.domElement );
 
+
 	//array of  functions for the rendering loop（渲染处理函数组初始化）
 	var onRenderFcts= [];
 
@@ -106,25 +114,9 @@
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
 	scene.add(camera);
 
-	// 控制器
-	controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.enablePan = false;
-	controls.enableDamping = false;
-	controls.enableZoom = true;
-
 	//handle arToolkitSource（调用打开相机事件，由THREEx提供）
 	var arToolkitSource = new THREEx.ArToolkitSource({
-		// to read from the webcam 
 		sourceType : 'webcam',
-
-		// // to read from an image
-		// sourceType : 'image',
-		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
-		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/armchair.jpg',
-
-		// to read from a video
-		// sourceType : 'video',
-		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
 	})
 
 	arToolkitSource.init(function onReady(){
@@ -150,11 +142,7 @@
 	var arToolkitContext = new THREEx.ArToolkitContext({
 		//相机参数设置
 		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
-		// debug: true,
-		// detectionMode: 'mono_and_matrix',
 		detectionMode: 'mono',
-		// detectionMode: 'color_and_matrix',
-		// matrixCodeType: '3x3',
 
 		canvasWidth: 80*3,
 		canvasHeight: 60*3,
@@ -214,10 +202,6 @@
     //创建物体的重要步骤
 
 	var allcube = new THREE.Group();
-	scene.add(allcube);
-	var mouseDown;
-	var rotateStart;
-    rotateStart = new THREE.Vector2();
 	function myinit () {
 		// 添加外部模型
 		for(let temp = 0; temp < 5; temp++) {
@@ -237,50 +221,25 @@
 			allcube.add(cube[onetime]);
 			onetime++;
 		}
-		//监听器
-		document.addEventListener ('touchstart', function (event) {
-			console.log('a')
-			// move = true;
-			// mouseX = event.clientX;//出发事件时的鼠标指针的水平坐标
-			// rotateStart.set( event.clientX, event.clientY );
-			// document.addEventListener('touchmove', onTouchMove, false );
-		}, false);
-		
-		document.addEventListener ('touchmove', function(event) {
-			console.log('c')
-			// move = true;
-			// onTouchMove (event);
-		}, false);
-
-		document.addEventListener ('touchend', function(event) {
-			console.log('b')
-			// move = false;
-			// document.removeEventListener("touchmove", onTouchMove);
-		}, false);
-
-
 		windowHalfX = window.innerWidth / 2;
 		windowHalfY = window.innerHeight / 2;
 
-		// 鼠标移动事件
-		function onTouchMove (event) {
-			if(!move){
-	            return;
-	        }       
-	        var deltaX = event.clientX - mouseX;
-	        mouseX = event.clientX;
-	        rotateScene(deltaX)
-	        console.log('bbbbbbbbbbbbbb')
-		}
-
-		//设置模型旋转速度，可以根据自己的需要调整
-	    function rotateScene(deltaX){
-	        //设置旋转方向和移动方向
-	        var deg = deltaX/279;
-	        //deg 设置模型旋转的弧度
-	        allcube.rotation.y += deg;
-	        render();
-	    }
+		// 新建渲染器
+		renderer2 = new THREE.WebGLRenderer({
+			alpha: true,
+			antialias: true
+		});
+		renderer2.setClearColor(0x000000, 0);
+		renderer2.setPixelRatio(window.devicePixelRatio);
+		renderer2.setSize(window.innerWidth, window.innerHeight);
+		document.querySelector('#box').appendChild(renderer2.domElement);
+		//控制器
+		controls = new THREE.OrbitControls(camera, renderer2.domElement);
+		controls.enablePan = false;
+		controls.enableDamping = false;
+		controls.enableZoom = true;
+		//加载模型
+		scene.add(allcube);
 	}
 
 	// 添加外部模型 END
@@ -311,8 +270,9 @@
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
-		updateControls();
 		renderer.render(scene, camera);
+		renderer2.render(scene, camera);
+		updateControls();
 		// measure time
 		lastTimeMsec = lastTimeMsec || nowMsec-1000/60
 		var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
