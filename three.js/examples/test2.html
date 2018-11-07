@@ -57,6 +57,8 @@
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
 	<div style='position: absolute; top: 10px; width:100%; text-align: center;z-index:1';>
 	</div>
+	<div class="test" style='position: absolute; top: 0; left: 0;'>1</div>
+</body>
 <script>
 	// 模型变量
 	var camera, scene, renderer, renderer2, windowHalfX, windowHalfY, elementObj;
@@ -234,19 +236,19 @@
 			onetime++;
 		}
 		//监听器
-		$('canvas').on( 'touchstart', function (event) {
+		document.addEventListener( 'touchstart', function (event) {
 			move = true;
 			mouseX = event.clientX;//出发事件时的鼠标指针的水平坐标
 			rotateStart.set( event.clientX, event.clientY );
 			document.addEventListener('touchmove', onTouchMove, false );
 		}, false);
 
-		$('canvas').on('touchend', function(event) {
+		document.addEventListener('touchend', function(event) {
 			move = false;
 			document.removeEventListener("touchmove", onTouchMove);
 		}, false);
 
-		$('canvas').on('touchmove', function(event) {
+		document.addEventListener('touchmove', function(event) {
 			move = true;
 			onTouchMove (event);
 		}, false);
@@ -318,5 +320,4 @@
 		controls.update();
 	}
 </script>
-</body>
 </html>
