@@ -210,28 +210,9 @@
 
 	// add a torus knot
     //创建物体的重要步骤
-    // 添加模型1
-	// var geometry = new THREE.CubeGeometry(1,1,1);
-	// var material = new THREE.MeshNormalMaterial({
-	// 	transparent : true,
-	// 	opacity: 0.5,
-	// 	side: THREE.DoubleSide
-	// })
-	// var mesh = new THREE.Mesh( geometry, material );
-	// mesh.position.y	= geometry.parameters.height/2
-	// arWorldRoot.add(mesh)
-	// // 添加模型2
-	// var geometry = new THREE.TorusKnotGeometry(0.3,0.1,64,16);
-	// var material = new THREE.MeshNormalMaterial(); 
-	// var mesh = new THREE.Mesh( geometry, material );
-	// mesh.position.y	= 0.5
-	// arWorldRoot.add( mesh );
 
-	
-	// 运行
-	// init();
-	// animate();
-
+	var allcube = new THREE.Group()
+	scene.add(allcube)
 	// 添加外部模型
 	function myinit () {
 		for(let temp = 0; temp < 5; temp++) {
@@ -248,17 +229,17 @@
 			cube[onetime].position.x = 0;
 			// cube[onetime].castShadow = true;
 			cube[onetime].name = onetime;
-			scene.add(cube[onetime]);
+			allcube.add(cube[onetime]);
 			onetime++;
 		}
 	}
 
 	// 添加外部模型 END
-	onRenderFcts.push(function(delta){
-		//又加了一个旋转事件
-		scene.rotation.y += 1 * Math.PI
-		console.log(scene.rotation.y)
-	})
+	// onRenderFcts.push(function(delta){
+	// 	//又加了一个旋转事件
+	// 	scene.rotation.y += delta * Math.PI
+	// 	console.log(scene.rotation.y)
+	// })
 
 	//renderer the Whole thing on the page
     //渲染场景到页面中
