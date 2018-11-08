@@ -376,7 +376,7 @@
 						color: Math.random() * 0xffffff,
 					});
 					cube[onetime] = new THREE.Mesh(geometry, material);
-					cube[onetime].position.y = 20 + onetime * 20;
+					cube[onetime].position.y = 10 + onetime * 20 + 400;
 					cube[onetime].castShadow = true;
 					cube[onetime].name = onetime;
 					scene.add(cube[onetime]);
