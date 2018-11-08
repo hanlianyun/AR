@@ -231,6 +231,7 @@ ARjs.MarkerControls.prototype._initArtoolkit = function(){
 			suc = false;
 			myinit ();
 			myanimate ();
+			loadanime(0);
 		}
 	}
 }

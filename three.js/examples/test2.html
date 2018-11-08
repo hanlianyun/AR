@@ -59,7 +59,7 @@
 			z-index: 9999999;
 		}
 		.box2 {
-			width: 100vw;
+			width: ,0vw;
 			height: 100vh;
 			position: absolute;
 			top: 0;
@@ -80,7 +80,7 @@
 	</style>
 </head>
 <body>
-	<!-- <div class="test">010</div> -->
+	<div class="test">007</div>
 	<div class="box" id="box"></div>
 	<div class="box2" id="box2"></div>
 </body>
@@ -258,9 +258,9 @@
 			var load = setInterval(function() {
 				if( point != cube.length ) {
 					cube[point].position.y -= 1;
-					if(cube[point].position.y <= 10 + point * 20) {
+					if(cube[point].position.y <= 10 + point * 10) {
 						clearInterval(load);
-						cube[point].position.y = 10 + point * 20;
+						cube[point].position.y = 10 + point * 10;
 						point++;
 					}
 				}
@@ -305,7 +305,7 @@
 			windowHalfY = window.innerHeight / 2;
 			//摄像机
 			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-			camera.position.set(0, 200, 200);
+			camera.position.set(0, 150, 150);
 			scene = new THREE.Scene();
 			group = new THREE.Group();
 			//scene.add(group);
@@ -350,7 +350,7 @@
 							//console.log($('.div').eq(point).text() == '第' + point + '个方块');
 							elementObj = makeElementObject('div', 100, 100);
 							//文字
-							pointNum = point + 1;
+							var pointNum = point + 1;
 							elementObj.css2dObject.element.textContent = '第' + pointNum + '个方块' //div文字
 							elementObj.css2dObject.element.className = 'div';
 							changecolor(point);
@@ -490,10 +490,8 @@
 		function updateControls() {
 			controls.update();
 		}
-		//系统加载结束方法
-		window.onload = function() {
-			loadanime(0);//加载动画
-		}
+		
+		
     //---------------------------------------------------------------------------------------------------------------
 	// var allcube = new THREE.Group();
 	// function myinit () {
