@@ -363,7 +363,7 @@
 			~ function() {
 				//model模型加载
 				for(let temp = 0; temp < 5; temp++) {
-					var geometry = new THREE.BoxGeometry(20, 20, 20);
+					var geometry = new THREE.BoxGeometry(15, 15, 15);
 					// for(var i = 0; i < geometry.faces.length; i += 2) {
 					// 	var hex = Math.random() * 0xffffff;
 					// 	geometry.faces[i].color.setHex(hex);
@@ -376,7 +376,7 @@
 						color: Math.random() * 0xffffff,
 					});
 					cube[onetime] = new THREE.Mesh(geometry, material);
-					cube[onetime].position.y = 10 + onetime * 20 + 400;
+					cube[onetime].position.y = 10 + onetime * 15 + 400;
 					cube[onetime].castShadow = true;
 					cube[onetime].name = onetime;
 					scene.add(cube[onetime]);
