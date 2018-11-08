@@ -258,9 +258,9 @@
 			var load = setInterval(function() {
 				if( point != cube.length ) {
 					cube[point].position.y -= 1;
-					if(cube[point].position.y <= 10 + point * 10) {
+					if(cube[point].position.y <= 15 + point * 15) {
 						clearInterval(load);
-						cube[point].position.y = 10 + point * 10;
+						cube[point].position.y = 15 + point * 15;
 						point++;
 					}
 				}
@@ -376,7 +376,7 @@
 						color: Math.random() * 0xffffff,
 					});
 					cube[onetime] = new THREE.Mesh(geometry, material);
-					cube[onetime].position.y = 7.5 + onetime * 15 + 400;
+					cube[onetime].position.y = 0 + onetime * 15;
 					cube[onetime].castShadow = true;
 					cube[onetime].name = onetime;
 					scene.add(cube[onetime]);
