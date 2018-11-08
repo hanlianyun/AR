@@ -221,13 +221,13 @@
 		function superanime(point) {
 			var flyright = setInterval(function() {
 				cube[point].position.x += 4;
-				if(cube[point].position.x >= 100) {
+				if(cube[point].position.x >= 50) {
 					clearInterval(flyright);
-					cube[point].position.x = 101;
+					cube[point].position.x = 51;
 				}
 			}, 5)
 			for(let temp = 0; temp < cube.length; temp++) {
-				if(cube[temp].position.x >= 100) {
+				if(cube[temp].position.x >= 50) {
 					onetime = temp;
 					console.log(onetime);
 				}
@@ -376,7 +376,7 @@
 						color: Math.random() * 0xffffff,
 					});
 					cube[onetime] = new THREE.Mesh(geometry, material);
-					cube[onetime].position.y = 10 + onetime * 15 + 400;
+					cube[onetime].position.y = 7.5 + onetime * 15 + 400;
 					cube[onetime].castShadow = true;
 					cube[onetime].name = onetime;
 					scene.add(cube[onetime]);
