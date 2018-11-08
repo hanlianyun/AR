@@ -75,6 +75,7 @@
 			z-index: 999999;
 		}
 		.div {
+			margin-top: 2em;
 		}
 	</style>
 </head>
@@ -349,7 +350,7 @@
 							//console.log($('.div').eq(point).text() == '第' + point + '个方块');
 							elementObj = makeElementObject('div', 100, 100);
 							//文字
-							elementObj.css2dObject.element.textContent = '第' + point + '个方块' //div文字
+							elementObj.css2dObject.element.textContent = '第' + point+1 + '个方块' //div文字
 							elementObj.css2dObject.element.className = 'div';
 							changecolor(point);
 							cube[point].add(elementObj);
