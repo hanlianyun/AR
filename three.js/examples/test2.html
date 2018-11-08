@@ -221,13 +221,13 @@
 		function superanime(point) {
 			var flyright = setInterval(function() {
 				cube[point].position.x += 4;
-				if(cube[point].position.x >= 400) {
+				if(cube[point].position.x >= 100) {
 					clearInterval(flyright);
-					cube[point].position.x = 401;
+					cube[point].position.x = 101;
 				}
 			}, 5)
 			for(let temp = 0; temp < cube.length; temp++) {
-				if(cube[temp].position.x >= 400) {
+				if(cube[temp].position.x >= 100) {
 					onetime = temp;
 					console.log(onetime);
 				}
