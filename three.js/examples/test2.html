@@ -80,7 +80,7 @@
 	</style>
 </head>
 <body>
-	<div class="test">009</div>
+	<div class="test">010</div>
 	<div class="box" id="box"></div>
 	<div class="box2" id="box2"></div>
 </body>
@@ -350,8 +350,8 @@
 							//console.log($('.div').eq(point).text() == '第' + point + '个方块');
 							elementObj = makeElementObject('div', 100, 100);
 							//文字
-							point = point + 1;
-							elementObj.css2dObject.element.textContent = '第' + point + '个方块' //div文字
+							pointNum = point + 1;
+							elementObj.css2dObject.element.textContent = '第' + pointNum + '个方块' //div文字
 							elementObj.css2dObject.element.className = 'div';
 							changecolor(point);
 							cube[point].add(elementObj);
