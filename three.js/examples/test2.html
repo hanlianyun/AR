@@ -621,14 +621,14 @@
 			if( cube[0].visible ) {
 				for(let temp = 0; temp <= cube.length; temp++) {
 					cube[temp].visible = false;
-					cube[temp].remove(elementObj);
+					$(".div").hide();
 					if(temp == 4) {
 						break;
 					}
 				}
 			}
 		}
-		$(".div").remove();
+		// $(".div").remove();
 	}
 
 	function show() {
@@ -636,6 +636,7 @@
 			if( !cube[0].visible ) {
 				for(let temp = 0; temp <= cube.length; temp++) {
 					cube[temp].visible = true;
+					$(".div").show();
 					if(temp == 4) {
 						break;
 					}
