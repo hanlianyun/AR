@@ -95,12 +95,12 @@
                     <div class="clickPupop1_2 tk" id="clickPupop1_2">        
                     </div>
                 </div>
-                <!-- <div class="round">
+                <div class="round">
                     <div class="round_bg">
                     </div>
                     <div class="round_text">
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -423,7 +423,7 @@
             }, 200);
             setTimeout(function(){
                 clickmethod1 ();   
-                // $(".round").css("display","none")
+                $(".round").css("display","none")
             }, 300);
             once = false;
         }
@@ -548,7 +548,7 @@
     var onProgress = function(xhr) {
         if(xhr.lengthComputable) {
             percentComplete = xhr.loaded / xhr.total * 100;
-            // $('.round_text').text(Math.round(percentComplete, 2) + '%');
+            $('.round_text').text(Math.round(percentComplete, 2) + '%');
             console.log(Math.round(percentComplete, 2) + '% downloaded');
         }
     };
