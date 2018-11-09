@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
+    <!-- 引入three.js库 及帧数查看组件 -->
+    <script src='vendor/three.js/build/three.js'></script>
+    <script src='vendor/three.js/examples/js/libs/stats.min.js'></script>
+    <!-- 引入jsartoolkit -->
+    <script src='../vendor/jsartoolkit5/build/artoolkit.min.js'></script>
+    <script src='../vendor/jsartoolkit5/js/artoolkit.api.js'></script>
+    <!-- 引入threex.artoolkit -->
+    <script src='../src/threex/threex-artoolkitsource.js'></script>
+    <script src='../src/threex/threex-artoolkitcontext.js'></script>
+    <script src='../src/threex/threex-artoolkitprofile.js'></script>
+    <script src='../src/threex/threex-arbasecontrols.js'></script>
+    <script src='../src/threex/threex-armarkercontrols.js'></script>
+    <script src='../src/threex/threex-arsmoothedcontrols.js'></script>
+    <!-- 引入JQ -->
+    <script src='vendor/js/jquery.min.1.7.js'></script>
+    <!-- 引入OBJ -->
+    <script src='vendor/js/MTLLoader.js'></script>
+    <script src='vendor/js/OBJLoader.js'></script>
+    <!-- 引入DIV -->
+    <script src="vendor/js/CSS2DRenderer.js"></script>
+    <script src="vendor/js/CSS3DRenderer.js"></script>
+    <!-- 操控模型 -->
+    <script src='vendor/js/OrbitControls.js'></script>
+    <script>THREEx.ArToolkitContext.baseURL = '../'</script>
+    <link rel="stylesheet" type="text/css" href="css/page2.css">
+    <!-- 样式 -->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #css,
+        #webgl {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* z-index: -1;  */
+        }
+        
+        #css {
+        }
+        
+        #webgl {
+            pointer-events: none;
+        }
+        .box {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9999999;
+        }
+        .box2 {
+            width: ,0vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9999999;
+        }
+        .test {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 36px;
+            color: #fff;
+            z-index: 999999;
+        }
+        .div {
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="page2">
+            <div class="box1">
+                <div id="space"></div>
+                <div class="clickPoint1_1 myGlint1" id="clickPoint1_1" onclick="showPupop(this, '#clickPupop1_1')">        
+                </div>
+                <div class="clickPoint1_2 myGlint1" id="clickPoint1_2" onclick="showPupop(this, '#clickPupop1_2')">        
+                </div>
+                <div class="throughPupop">
+                    <div class="clickPupop1_1 tk" id="clickPupop1_1">        
+                    </div>
+                    <div class="clickPupop1_2 tk" id="clickPupop1_2">        
+                    </div>
+                </div>
+                <!-- <div class="round">
+                    <div class="round_bg">
+                    </div>
+                    <div class="round_text">
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // 模型变量
+    var a = 0;
+    var camera, scene, renderer, renderer1, renderer3, windowHalfX, windowHalfY, elementObj;
+    var mouseX = 0, mouseY = 0, tempX = 0, tempY = 0;
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+    var controls, percentComplete;
+    var sphere, group, cubeobj, radiu;
+    var light, move = true;
+    var lookAt = new THREE.Vector3(0, 0, 0);
+    var lightMovementAmplitude = 200;
+    var mouse = new THREE.Vector2();
+    var tempmouse = new THREE.Vector2();
+    var raycaster = new THREE.Raycaster();
+    var cameraposition, cube = [], onetime = 0;
+    // 新增变量
+    var moved = false;
+    var once = true;
+    var halfWidth = window.innerWidth / 2;
+    var halfHeight = window.innerHeight / 2;
+    var a = 0;
+    var aObj, aOps;
+    var container, stats;
+    var camera, scene, renderer, renderer2;
+    var raycaster = null;
+    var line, percentComplete;
+    var intersection = {
+        intersects: false,
+        point: new THREE.Vector3(),
+        normal: new THREE.Vector3()
+    };
+    var position = new THREE.Vector3();
+    var params = {
+        minScale: 10,
+        maxScale: 20,
+        rotate: true,
+        clear: function() {
+            removeDecals();
+        }
+    };
+    var textureLoader = new THREE.TextureLoader();
+    var decalMaterial = new THREE.MeshPhongMaterial( {
+        specular: 0x444444,
+        // map: decalDiffuse,
+        // normalMap: decalNormal,
+        normalScale: new THREE.Vector2( 1, 1 ),
+        shininess: 30,
+        transparent: true,
+        depthTest: true,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: - 4,
+        wireframe: false
+    } );
+    var size = new THREE.Vector3( 10, 10, 10 );
+    var decals = [];
+    var orientation = new THREE.Euler();
+    var mouseHelper;
+    var mouseX = 0, mouseY = 0, tempX = 0, tempY = 0;
+    var tempmouse = new THREE.Vector2();
+    var containWidth = $('.box1').width();
+    var containHeight = $('.box1').height();
+    var windowHalfX = containWidth / 2;
+    var windowHalfY = containHeight / 2;
+    var mesh;
+    var cube1;
+    var meshNode1;
+    var stateNode1 = false;
+    //init renderer（初始化渲染器）
+    var renderer = new THREE.WebGLRenderer({
+        alpha: true
+    });
+    renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+    // renderer.setPixelRatio( 2 );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.domElement.style.position = 'absolute'
+    renderer.domElement.style.zIndex = '-10'
+    renderer.domElement.style.top = '0px'
+    renderer.domElement.style.left = '0px'
+    document.body.appendChild( renderer.domElement );
+
+
+    //array of  functions for the rendering loop（渲染处理函数组初始化）
+    var onRenderFcts= [];
+
+    // init scene and camera
+    var scene   = new THREE.Scene();//初始化场景和环境
+
+    var ambient = new THREE.AmbientLight( 0x666666 );
+    scene.add( ambient );
+
+    var directionalLight = new THREE.DirectionalLight( 0x887766 );
+    directionalLight.position.set( -1, 1, 1 ).normalize();
+    scene.add( directionalLight );
+
+    //Initialize a basic camera
+    //Create a camera（初始化相机添加到场景）
+    //var camera = new THREE.Camera();
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+    scene.add(camera);
+
+    //handle arToolkitSource（调用打开相机事件，由THREEx提供）
+    var arToolkitSource = new THREEx.ArToolkitSource({
+        sourceType : 'webcam',
+    })
+
+    arToolkitSource.init(function onReady(){
+        onResize()
+    })
+    
+    //handle resize(处理重新调整大小后正常显示)
+    window.addEventListener('resize', function(){
+        onResize()
+    })
+    function onResize(){
+        arToolkitSource.onResizeElement()   
+        arToolkitSource.copyElementSizeTo(renderer.domElement)  
+        if( arToolkitContext.arController !== null ){
+            arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas) 
+        }   
+    }
+
+    //初始化 ArcToolkit环境, 相机内部场景
+    //initialize arToolkitContext   
+
+    // create atToolkitContext
+    var arToolkitContext = new THREEx.ArToolkitContext({
+        //相机参数设置
+        cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+        detectionMode: 'mono',
+
+        canvasWidth: 80*3,
+        canvasHeight: 60*3,
+
+        maxDetectionRate: 30,//最大旋转角度还是什么滴
+    })
+    // initialize it
+    arToolkitContext.init(function onCompleted(){
+        // copy projection matrix to camera
+        camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+    })
+
+    // update artoolkit on every frame
+    onRenderFcts.push(function(){
+        if( arToolkitSource.ready === false )   return
+
+        arToolkitContext.update( arToolkitSource.domElement )
+    })
+    
+    //Create a ArMakerControls
+    //创建一个Ar标记
+    var markerRoot = new THREE.Group;//用threejs的点集合初始化。
+    scene.add(markerRoot);
+    var markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+        type : 'pattern',
+        patternUrl : THREEx.ArToolkitContext.baseURL + 'examples/marker-training/examples/pattern-files/pattern-more.patt',
+    })
+
+
+    // build a smoothedControls
+    // 建立一个平滑控制
+    var smoothedRoot = new THREE.Group()
+    scene.add(smoothedRoot)
+    var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
+        lerpPosition: 0.4,
+        lerpQuaternion: 0.3,
+        lerpScale: 1,
+    })
+    onRenderFcts.push(function(delta){
+        smoothedControls.update(markerRoot)
+    })
+    //add Object in the scene
+    //添加物体
+    var arWorldRoot = smoothedRoot
+
+    // add a torus knot
+    //创建物体的重要步骤
+     
+    function myinit() {
+        container = document.getElementById("space")
+        camera = new THREE.PerspectiveCamera( 45, containWidth / containHeight, 1, 8000 );
+        // 控制模型大小
+        camera.position.set(0, 0, 2700); 
+        scene = new THREE.Scene();
+        raycaster = new THREE.Raycaster();
+        var geometry = new THREE.BufferGeometry();
+        geometry.setFromPoints([ new THREE.Vector3(), new THREE.Vector3() ]);
+        line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { linewidth: 4 } ) );
+        // scene.add( line );
+        mouseHelper = new THREE.Mesh( new THREE.BoxBufferGeometry( 1, 1, 10 ), new THREE.MeshNormalMaterial() );
+        mouseHelper.visible = false;
+        scene.add( mouseHelper );
+        // scene.background = '0xffffff';
+        var ambient = new THREE.AmbientLight( 0xffffff );
+        scene.add( ambient );         
+        var directionalLight = new THREE.DirectionalLight( 0xffffff );
+        directionalLight.position.set( -5, 5, 5).normalize();
+        directionalLight.color = {
+            b: 0,
+            g: 0,
+            r: 0,
+        };
+        scene.add( directionalLight );
+        createMtlObj({
+            mtlFileName:"./d/d.mtl",
+            objFileName:"./d/d.obj",
+            completeCallback:function(object){
+                object.traverse(function(child) { 
+                    if (child instanceof THREE.Mesh) { 
+                        child.material.side = THREE.DoubleSide;
+                    }
+                });
+                // console.log(object)
+                object.emissive=0x00ffff;
+                object.ambient=0x00ffff;
+                object.position.x = 0;
+                object.position.y = 0;
+                object.position.z = 0;
+                object.scale.x=1;
+                object.scale.y=1;
+                object.scale.z=1;
+                object.name="b"; 
+                mesh = object;
+                scene.add(object);
+                // addpoint ();
+            },
+            addBananaInScene:function(object) {
+                //设置模型的中心在模型的中点
+                banana = object;
+                banana.children[0].geometry.computeBoundingBox();
+                banana.rotation.x = THREE.Math.degToRad( 0 );
+                banana.children[a].geometry.center();
+                //设置结束
+                object.traverse(function(child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.geometry.computeVertexNormals();
+                    }
+                });
+                banana.scale.set(4, 4, 4);
+                scene.add(banana);
+                render();
+            },
+            setGeometryCenter: function(object){
+                object.children[a].geometry.center();
+                render();
+            }
+        })
+
+        //webGL高性能3D渲染器
+        renderer1 = new THREE.WebGLRenderer(
+            {
+                alpha:true,
+                antialias: true
+            }
+        );
+        renderer1.setPixelRatio( window.devicePixelRatio );
+        renderer1.setSize( containWidth, containHeight ); 
+      
+        renderer1.setClearColor('#010915', 0);
+        renderer1.clearColor();
+      
+        container.appendChild( renderer1.domElement );
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        window.addEventListener( 'resize', onWindowResize, false );
+        controls = new THREE.OrbitControls(camera, renderer1.domElement);
+        controls.enablePan = false;
+        controls.enableDamping = false;
+        controls.enableZoom = true;
+        controls.addEventListener( 'change', function () {
+        moved = true;
+        checkIntersection ();
+        clickmethod1 ();
+        } );
+    }
+
+    function createMtlObj(options){
+        // console.log(options)
+        aOps = options;
+        var mtlLoader = new THREE.MTLLoader();
+        mtlLoader.setBaseUrl( options.mtlBaseUrl );
+        mtlLoader.setPath( options.mtlPath );
+        mtlLoader.load( options.mtlFileName, function( materials ) {
+            materials.preload();
+            var objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials( materials );
+            objLoader.setPath( options.objPath );
+            objLoader.load( options.objFileName, function ( object ) {
+                aObj = object;
+                if(typeof options.completeCallback=="function"){
+                    options.completeCallback(object);
+                    options.addBananaInScene(object);
+                }
+            }, onProgress, onError);
+     
+        });
+    }
+
+    function onWindowResize() {
+        windowHalfX = containWidth / 2;
+        windowHalfY = containHeight / 2;
+        camera.aspect = containWidth / containHeight;
+        camera.updateProjectionMatrix();
+        renderer1.setSize( containWidth, containHeight );
+    }
+    function onDocumentMouseMove( event ) {
+        mouseX = ( event.clientX - windowHalfX ) / 2;
+        mouseY = ( event.clientY - windowHalfY ) / 2;
+    }
+    function myanimate() {
+        requestAnimationFrame( myanimate );
+        render();
+        if (Math.round(percentComplete, 2) >= 100 && once) {    
+           setTimeout(function(){
+                checkIntersection ()
+            }, 200);
+            setTimeout(function(){
+                clickmethod1 ();   
+                // $(".round").css("display","none")
+            }, 300);
+            once = false;
+        }
+    }
+    function render() {
+        camera.lookAt(scene.position);
+        renderer1.render(scene, camera);
+    }
+    function changeA() {
+        a ++;
+        aOps.setGeometryCenter(aObj);
+    }
+    // add
+    var mouse = new THREE.Vector2();
+    function onMouseClick( event ) {
+        //通过鼠标点击的位置计算出raycaster所需要的点的位置，以屏幕中心为原点，值的范围为-1到1.
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        // 通过鼠标点的位置和当前相机的矩阵计算出raycaster
+        raycaster.setFromCamera( mouse, camera );
+        // 获取raycaster直线和所有模型相交的数组集合
+        var intersects = raycaster.intersectObjects( scene.children );
+        // console.log(intersects.length)
+        for ( var i = 0; i < intersects.length; i++ ) {
+            intersects[ i ].object.material.color.set( 0xff0000 );
+            // console.log(intersects[i])
+        }
+    }
+    
+    document.addEventListener( 'mousedown', function () {
+        moved = false;
+    }, false );
+    document.addEventListener( 'mouseup', function() {
+        checkIntersection();
+    } );
+    document.addEventListener( 'mousemove', onTouchMove );
+    // 手机
+    document.addEventListener( 'touchstart', function () {
+        moved = false;
+    }, false );
+    document.addEventListener( 'touchend', function() {
+        checkIntersection();
+    } );
+    document.addEventListener( 'touchmove', onTouchMove );
+    function onTouchMove( event ) {
+        var x, y;
+        if ( event.changedTouches ) {
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
+        } else {
+            x = event.clientX;
+            y = event.clientY;
+        }
+        mouse.x = ( x / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( y / window.innerHeight ) * 2 + 1;
+        checkIntersection();
+    }
+    function checkIntersection () {
+        // console.log(mesh)
+        if ( ! mesh ) return;
+        raycaster.setFromCamera( mouse, camera );
+        // console.log(raycaster)
+        var intersects = raycaster.intersectObjects( [ mesh ], true );
+        // console.log(mesh)
+        if ( intersects.length > 0 ) {
+            var p = intersects[ 0 ].point;
+            mouseHelper.position.copy( p );
+            intersection.point.copy( p );
+            var n = intersects[ 0 ].face.normal.clone();
+            n.transformDirection( mesh.matrixWorld );
+            n.multiplyScalar( 100 );
+            n.add( intersects[ 0 ].point );
+            intersection.normal.copy( intersects[ 0 ].face.normal );
+            mouseHelper.lookAt( n );
+            var positions = line.geometry.attributes.position;
+            positions.setXYZ( 0, p.x, p.y, p.z );
+            positions.setXYZ( 1, n.x, n.y, n.z );
+            positions.needsUpdate = true;
+            intersection.intersects = true;
+            pointPosition ();
+        } else {
+            intersection.intersects = false;
+            pointPosition ();
+        }
+    }
+    function removeDecals() {
+        decals.forEach( function( d ) {
+            scene.remove( d );
+        } );
+        decals = [];
+    }
+    function pointPosition () {
+        var z1 = new THREE.Vector3(0, 566, 50)
+        var z2 = new THREE.Vector3(0, 0, 50)
+        var vector1 = z1.project(camera);
+        var vector2 = z2.project(camera);
+        // console.log(z)
+        $("#clickPoint1_1").css({
+            left: vector1.x * halfWidth + halfWidth - $("#clickPoint1_1").width() / 2,
+            top: -vector1.y * halfHeight + halfHeight- $("#clickPoint1_1").height() / 2
+        });
+        $("#clickPoint1_2").css({
+            left: vector2.x * halfWidth + halfWidth - $("#clickPoint1_2").width() / 2,
+            top: -vector2.y * halfHeight + halfHeight- $("#clickPoint1_2").height() / 2
+        });
+        setTimeout (function () {
+            $("#clickPupop1_1").css({
+                left: $("#clickPoint1_1").offset().left + $("#clickPoint1_1").width() / 2,
+                top: $("#clickPoint1_1").offset().top + $("#clickPoint1_1").height() / 2 - $("#clickPupop1_1").height()
+            });
+            $("#clickPupop1_2").css({
+                left: $("#clickPoint1_2").offset().left + $("#clickPoint1_2").width() / 2,
+                top: $("#clickPoint1_2").offset().top + $("#clickPoint1_2").height() / 2
+            });
+
+        }, 100)
+    }
+    function initStats() {
+        stats = new Stats();
+        document.body.appendChild(stats.dom);    }
+    // 模型加载
+    var onProgress = function(xhr) {
+        if(xhr.lengthComputable) {
+            percentComplete = xhr.loaded / xhr.total * 100;
+            // $('.round_text').text(Math.round(percentComplete, 2) + '%');
+            console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+    };
+    var onError = function(xhr) {};
+    function clickmethod1 () {
+         var rotatex = camera.position.x;
+         var rotatey = camera.position.y;
+         var rotatez = camera.position.z;
+         if (rotatex >= -2000 && rotatex <= 2000 &&　rotatey >= -2000 && rotatey <= 2000 && rotatez >= 10) {
+            $("#clickPoint1_1").css({
+                opacity: '1',
+                display: 'block'
+            });
+            $("#clickPoint1_2").css({
+                opacity: '1',
+                display: 'block'
+            });
+            
+         } else {
+            $("#clickPoint1_1").css({
+                opacity: '0'
+            });
+            $("#clickPupop1_1").css({
+                opacity: '0'
+            });
+            $("#clickPoint1_2").css({
+                opacity: '0'
+            });
+            $("#clickPupop1_2").css({
+                opacity: '0'
+            });
+         }
+    }
+    function showPupop(e,id) {
+        if ($(e).css('opacity') == 0) return
+        var tkState = $(id).css('opacity')
+        if (tkState == '1') {
+            $(id).css('opacity', 0);
+        } else {
+            $(id).css('opacity', 1);
+        }
+        
+    }   
+        
+    //---------------------------------------------------------------------------------------------------------------
+    // 添加外部模型 END
+
+    //renderer the Whole thing on the page
+    //渲染场景到页面中
+    //渲染率查看器
+    var stats = new Stats();
+    document.body.appendChild( stats.dom );
+    // render the scene
+    onRenderFcts.push(function(){
+        // renderer.render( scene, camera );
+        stats.update();
+    })
+    
+
+    
+    //行程渲染事件环路
+    //run the rendering loop
+    var lastTimeMsec= null
+    requestAnimationFrame(function animate(nowMsec){
+        // keep looping
+        requestAnimationFrame( animate );
+        lastTimeMsec = lastTimeMsec || nowMsec-1000/60
+        var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+        lastTimeMsec = nowMsec
+        // call each update function
+        onRenderFcts.forEach(function(onRenderFct){
+            onRenderFct(deltaMsec/1000, nowMsec/1000)
+        })
+    })
+    // function addpoint () {
+    //     var material1 = new THREE.MeshStandardMaterial({color:0xfff000});
+    //     //添加球形
+    //     var geometry1 = new THREE.SphereGeometry(1, 1, 1);
+    //     //添加第1个
+    //     cube1 = new THREE.Mesh(geometry1, material1);
+    //     cube1.position.set(0, 0, 0);
+    //     cube1.name = 'node1';
+    //     meshNode1 = cube1;
+    //     scene.add(cube1);
+    // }
+    function pointPosition () {
+        var z1 = new THREE.Vector3(0, 566, 50)
+        var z2 = new THREE.Vector3(0, 0, 50)
+        var vector1 = z1.project(camera);
+        var vector2 = z2.project(camera);
+        // console.log(z)
+        $("#clickPoint1_1").css({
+            left: vector1.x * halfWidth + halfWidth - $("#clickPoint1_1").width() / 2,
+            top: -vector1.y * halfHeight + halfHeight- $("#clickPoint1_1").height() / 2
+        });
+        $("#clickPoint1_2").css({
+            left: vector2.x * halfWidth + halfWidth - $("#clickPoint1_2").width() / 2,
+            top: -vector2.y * halfHeight + halfHeight- $("#clickPoint1_2").height() / 2
+        });
+        setTimeout (function () {
+            $("#clickPupop1_1").css({
+                left: $("#clickPoint1_1").offset().left + $("#clickPoint1_1").width() / 2,
+                top: $("#clickPoint1_1").offset().top + $("#clickPoint1_1").height() / 2 - $("#clickPupop1_1").height()
+            });
+            $("#clickPupop1_2").css({
+                left: $("#clickPoint1_2").offset().left + $("#clickPoint1_2").width() / 2,
+                top: $("#clickPoint1_2").offset().top + $("#clickPoint1_2").height() / 2
+            });
+
+        }, 100)
+    }
+
+    function clickmethod1 () {
+         var rotatex = camera.position.x;
+         var rotatey = camera.position.y;
+         var rotatez = camera.position.z;
+         if (rotatex >= -2000 && rotatex <= 2000 &&　rotatey >= -2000 && rotatey <= 2000 && rotatez >= 10) {
+            $("#clickPoint1_1").css({
+                opacity: '1',
+                display: 'block'
+            });
+            $("#clickPoint1_2").css({
+                opacity: '1',
+                display: 'block'
+            });
+            
+         } else {
+            $("#clickPoint1_1").css({
+                opacity: '0'
+            });
+            $("#clickPupop1_1").css({
+                opacity: '0'
+            });
+            $("#clickPoint1_2").css({
+                opacity: '0'
+            });
+            $("#clickPupop1_2").css({
+                opacity: '0'
+            });
+         }
+    }
+    function showPupop(e,id) {
+        if ($(e).css('opacity') == 0) return
+        var tkState = $(id).css('opacity')
+        if (tkState == '1') {
+            $(id).css('opacity', 0);
+        } else {
+            $(id).css('opacity', 1);
+        }
+        
+    }
+    visble = setInterval( function(){ hide() }, 1000);
+    
+    function hide() {
+        // console.log(mesh)
+        if( mesh ) {
+            if( mesh.visible ) {         
+                mesh.visible = false;
+                $('#clickPoint1_1').css('opacity', '0');
+                $('#clickPupop1_1').css('opacity', '0');
+                $('#clickPoint1_2').css('opacity', '0');
+                $('#clickPupop1_2').css('opacity', '0');
+            }
+        }
+    }
+
+    function show() {
+        // console.log(mesh)
+        if( mesh ) {
+            if( !mesh.visible ) {
+                mesh.visible = true;
+                $('#clickPoint1_1').css('opacity', '1');
+                $('#clickPoint1_2').css('opacity', '1');
+            }
+        }
+    }
+</script>
+</html>

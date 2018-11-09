@@ -227,11 +227,16 @@ ARjs.MarkerControls.prototype._initArtoolkit = function(){
 
 		// var modelViewMatrix = new THREE.Matrix4().fromArray(event.data.matrix)
 		// _this.updateWithModelViewMatrix(modelViewMatrix)
+		console.log(1)
+		clearInterval(visble);
+		visble = setInterval( function(){ hide(); }, 1000);
+		show(); 
+
 		if (suc) {
 			suc = false;
 			myinit ();
 			myanimate ();
-			loadanime(0);
+			//loadanime(0);
 		}
 	}
 }

@@ -612,5 +612,37 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
+
+	visble = setInterval( function(){ hide() }, 1000);
+	
+	function hide() {
+		console.log(4);
+		if( cube[0] ) {
+			if( cube[0].visible ) {
+				for(let temp = 0; temp <= cube.length; temp++) {
+					cube[temp].visible = false;
+					cube[temp].remove(elementObj);
+					if(temp == 4) {
+						break;
+					}
+				}
+			}
+		}
+		$(".div").remove();
+	}
+
+	function show() {
+		if( cube[0] ) {
+			if( !cube[0].visible ) {
+				for(let temp = 0; temp <= cube.length; temp++) {
+					cube[temp].visible = true;
+					if(temp == 4) {
+						break;
+					}
+				}
+			}
+		}
+	}
+
 </script>
 </html>
